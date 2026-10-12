@@ -23,6 +23,7 @@ for arch in $archs; do
 done
 lipo -create build/BudsBar-* -output "$APP/Contents/MacOS/BudsBar"
 rm -f build/BudsBar-*
+xattr -cr "$APP"
 codesign --force --sign - "$APP"
 
 case "$MODE" in
@@ -36,7 +37,8 @@ case "$MODE" in
     ;;
   --release)
     mkdir -p dist
-    ditto -c -k --keepParent "$APP" "dist/BudsBar-$VERSION.zip"
+    rm -f "dist/BudsBar-$VERSION.zip"
+    ditto -c -k --norsrc --noextattr --keepParent "$APP" "dist/BudsBar-$VERSION.zip"
     echo "Built dist/BudsBar-$VERSION.zip"
     ;;
 esac
